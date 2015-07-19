@@ -14,7 +14,25 @@ namespace Digi.Utils
         private const string LOG_FILE = "info.log";
         
         private static System.IO.TextWriter writer;
-        
+        private static int indent = 0;
+        private static StringBuilder cache = new StringBuilder();
+
+        public static void IncreaseIndent()
+        {
+            indent++;
+        }
+
+        public static void DecreaseIndent()
+        {
+            if (indent > 0)
+                indent--;
+        }
+
+        public static void ResetIndent()
+        {
+            indent = 0;
+        }
+
         public static void Error(Exception e)
         {
             Error(e.ToString());
@@ -48,9 +66,21 @@ namespace Digi.Utils
                 
                 writer = MyAPIGateway.Utilities.WriteFileInLocalStorage(LOG_FILE, typeof(Log));
             }
-            
-            writer.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + msg);
+
+            cache.Clear();
+            cache.Append(DateTime.Now.ToString("[HH:mm:ss] "));
+
+            for (int i = 0; i < indent; i++)
+            {
+                cache.Append("\t");
+            }
+
+            cache.Append(msg);
+
+            writer.WriteLine(cache);
             writer.Flush();
+
+            cache.Clear();
         }
         
         public static void Close()
@@ -61,6 +91,9 @@ namespace Digi.Utils
                 writer.Close();
                 writer = null;
             }
+
+            indent = 0;
+            cache.Clear();
         }
     }
 }

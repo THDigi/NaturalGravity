@@ -67,6 +67,8 @@ namespace Digi.NaturalGravity
         
         private static void ResetSettings()
         {
+            Log.Info("Settings asigned to defaults.");
+            
             affect_ships = DEFAULT_AFFECT_SHIPS;
             mass_limit = DEFAULT_MASS_LIMIT;
             mass_divide = DEFAULT_MASS_DIVIDE;
@@ -87,7 +89,7 @@ namespace Digi.NaturalGravity
             
             if(args.Length != 2)
             {
-                Log.Error(CONFIG_FILE + " has an invalid setting: '" + line + "'");
+                Log.Error("Invalid setting: '" + line + "'");
                 return false;
             }
             
@@ -138,8 +140,8 @@ namespace Digi.NaturalGravity
             if(verbose)
                 MyAPIGateway.Utilities.ShowMessage(NaturalGravity.MOD_SHORTNAME, "The '"+param+"' setting does not exist.");
             else
-                Log.Info("WARNING: The '"+param+"' setting does not exist.");
-            
+                Log.Error("The '"+param+"' setting does not exist.");
+
             return false;
         }
         
@@ -264,8 +266,7 @@ namespace Digi.NaturalGravity
                 LoadConfig(); // load changed settings
                 SaveConfig(); // re-save to update comments and variables or create the file
                 
-                Log.Info("Loaded settings:");
-                Log.Info(GetSettingsString(false));
+                Log.Info("Loaded settings:\n" + GetSettingsString(false));
             }
             else
             {
@@ -288,6 +289,8 @@ namespace Digi.NaturalGravity
         {
             if(NaturalGravity.isServer)
                 return;
+
+            Log.Info("Requesting settings from server...");
             
             byte[] bytes = encode.GetBytes(MyAPIGateway.Multiplayer.MyId.ToString());
             MyAPIGateway.Multiplayer.SendMessageToServer(PACKET_ASKSETTINGS, bytes, true);
@@ -295,7 +298,7 @@ namespace Digi.NaturalGravity
         
         public static void SyncSettings()
         {
-            if(NaturalGravity.isServer)
+            if (NaturalGravity.isServer)
                 SendSettingsToClients();
             else
                 SendSettings(0);
@@ -305,7 +308,9 @@ namespace Digi.NaturalGravity
         {
             if(!NaturalGravity.isServer)
                 return;
-            
+
+            Log.Info("Sending settings to all clients...");
+
             string data = GetSettingsString(false);
             byte[] bytes = encode.GetBytes(data);
             
@@ -316,11 +321,17 @@ namespace Digi.NaturalGravity
         {
             string data = GetSettingsString(false);
             byte[] bytes = encode.GetBytes(data);
-            
-            if(sendTo == 0)
+
+            if (sendTo == 0)
+            {
+                Log.Info("Sending settings to server...");
                 MyAPIGateway.Multiplayer.SendMessageToServer(PACKET_SETTINGS, bytes, true);
+            }
             else
+            {
+                Log.Info("Sending settings to client " + sendTo + "...");
                 MyAPIGateway.Multiplayer.SendMessageTo(PACKET_SETTINGS, bytes, sendTo, true);
+            }
         }
         
         protected static void ReceivedSettings(byte[] bytes)
@@ -329,14 +340,18 @@ namespace Digi.NaturalGravity
             string[] lines = data.Split('\n');
             
             Log.Info("Network Debug: ReceivedSettings, settings='" + data + "'");
-            
+            Log.IncreaseIndent();
+
             foreach(string line in lines)
             {
-                ParseSetting(line.Trim(), false, '=');
+                if (!ParseSetting(line.Trim(), false, '='))
+                    Log.Info("Failed to parse line:" + line.Trim());
             }
             
             if(NaturalGravity.isServer)
                 SendSettingsToClients();
+
+            Log.DecreaseIndent();
         }
         
         protected static void ReceivedSettingsRequest(byte[] bytes)
@@ -377,28 +392,37 @@ namespace Digi.NaturalGravity
                     ResetConfig();
                     return;
             }
-            
-            Log.Info("WARNING: ReceivedConfigRequest has unknown action: '"+bytes[0]+"'");
+
+            Log.Error("ReceivedConfigRequest has unknown action: '" + bytes[0] + "'");
         }
         
         public static void SaveConfig()
         {
             if(NaturalGravity.isServer)
             {
+                Log.Info("Saving config to storage...");
+                Log.IncreaseIndent();
+
                 try
                 {
                     var write = MyAPIGateway.Utilities.WriteFileInLocalStorage(CONFIG_FILE, typeof(Settings));
                     write.Write(GetSettingsString(true));
                     write.Flush();
                     write.Close();
+
+                    Log.Info("Finished writing.");
                 }
                 catch(Exception e)
                 {
                     Log.Error(e);
                 }
+
+                Log.DecreaseIndent();
             }
             else
             {
+                Log.Info("Sending config save request...");
+
                 MyAPIGateway.Multiplayer.SendMessageToServer(PACKET_CONFIG, new byte[] { CONFIG_SAVE }, true);
             }
         }
@@ -407,40 +431,54 @@ namespace Digi.NaturalGravity
         {
             if(NaturalGravity.isServer)
             {
+                Log.Info("Loading config from storage...");
+                Log.IncreaseIndent();
+
                 try
                 {
                     if(!MyAPIGateway.Utilities.FileExistsInLocalStorage(CONFIG_FILE, typeof(Settings)))
-                        return;
-                    
-                    var read = MyAPIGateway.Utilities.ReadFileInLocalStorage(CONFIG_FILE, typeof(Settings));
-                    string line;
-                    
-                    while((line = read.ReadLine()) != null)
                     {
-                        line = line.Trim(' ', '\r', '\n');
-                        
-                        if(line == String.Empty || line.StartsWith("//"))
-                            continue;
-                        
-                        int commentIndex = line.IndexOf("//");
-                        
-                        if(commentIndex > 0)
-                            line = line.Substring(0, line.Length - commentIndex);
-                        
-                        ParseSetting(line, false, '=');
+                        Log.Info("File does not exist.");
                     }
-                    
-                    read.Close();
-                    
-                    SendSettingsToClients();
+                    else
+                    {
+                        var read = MyAPIGateway.Utilities.ReadFileInLocalStorage(CONFIG_FILE, typeof(Settings));
+                        string line;
+
+                        while ((line = read.ReadLine()) != null)
+                        {
+                            line = line.Trim(' ', '\r', '\n');
+
+                            if (line == String.Empty || line.StartsWith("//"))
+                                continue;
+
+                            int commentIndex = line.IndexOf("//");
+
+                            if (commentIndex > 0)
+                                line = line.Substring(0, line.Length - commentIndex);
+
+                            if (!ParseSetting(line, false, '='))
+                                Log.Info("Failed to parse line:" + line);
+                        }
+
+                        read.Close();
+
+                        Log.Info("Finished reading.");
+
+                        SendSettingsToClients();
+                    }
                 }
                 catch(Exception e)
                 {
                     Log.Error(e);
                 }
+
+                Log.DecreaseIndent();
             }
             else
             {
+                Log.Info("Sending config load request...");
+
                 MyAPIGateway.Multiplayer.SendMessageToServer(PACKET_CONFIG, new byte[] { CONFIG_LOAD }, true);
             }
         }
@@ -449,11 +487,18 @@ namespace Digi.NaturalGravity
         {
             if(NaturalGravity.isServer)
             {
+                Log.Info("Reset config method called...");
+                Log.IncreaseIndent();
+
                 ResetSettings();
                 SendSettingsToClients();
+
+                Log.DecreaseIndent();
             }
             else
             {
+                Log.Info("Sending config reset request...");
+
                 MyAPIGateway.Multiplayer.SendMessageToServer(PACKET_CONFIG, new byte[] { CONFIG_RESET }, true);
             }
         }

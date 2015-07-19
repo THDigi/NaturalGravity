@@ -28,8 +28,10 @@ using Digi.Utils;
 
 namespace Digi.NaturalGravity
 {
+    // TODO FIX: jetpack_hover not working on clients ?
+    
     [MySessionComponentDescriptor(MyUpdateOrder.BeforeSimulation)]
-    public class NaturalGravity : MySessionComponentBase
+    class NaturalGravity : MySessionComponentBase
     {
         public static bool init { get; private set; }
         public static bool isServer { get; private set; }
@@ -225,6 +227,10 @@ namespace Digi.NaturalGravity
                     if(Settings.ParseSetting(message, true, ' '))
                     {
                         Settings.SyncSettings();
+                    }
+                    else
+                    {
+                        MyAPIGateway.Utilities.ShowMessage(MOD_SHORTNAME, "Error parsing setting or its value!");
                     }
                     
                     return;

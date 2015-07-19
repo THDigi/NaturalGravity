@@ -26,7 +26,7 @@ using Digi.Utils;
 namespace Digi.NaturalGravity
 {
     [MyEntityComponentDescriptor(typeof(MyObjectBuilder_Reactor), "NaturalGravityReactor")]
-    public class NaturalGravityReactor : MyGameLogicComponent
+    class NaturalGravityReactor : MyGameLogicComponent
     {
         private MyObjectBuilder_EntityBase objectBuilder;
         private Sandbox.ModAPI.Ingame.IMyReactor reactor;

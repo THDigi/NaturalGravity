@@ -25,7 +25,7 @@ using Digi.Utils;
 namespace Digi.NaturalGravity
 {
     [MyEntityComponentDescriptor(typeof(MyObjectBuilder_GravityGeneratorSphere), "NaturalGravityGenerator")]
-    public class NaturalGravityGenerator : MyGameLogicComponent
+    class NaturalGravityGenerator : MyGameLogicComponent
     {
         private MyObjectBuilder_EntityBase objectBuilder;
         private Sandbox.ModAPI.Ingame.IMyGravityGeneratorSphere generator;

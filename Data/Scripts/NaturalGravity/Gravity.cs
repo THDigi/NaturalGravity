@@ -151,7 +151,7 @@ namespace Digi.NaturalGravity
                     {
                         var character = ent.GetObjectBuilder(false) as MyObjectBuilder_Character;
                         
-                        if(character.JetpackEnabled && (Settings.jetpack_hover ? !character.DampenersEnabled : true))
+                        if(character.JetpackEnabled && (!Settings.jetpack_hover || !character.DampenersEnabled))
                         {
                             var force = Vector3D.Normalize(center - NaturalGravity.playerPos.Value) * strength * (Settings.jetpack / 100.0);
                             
