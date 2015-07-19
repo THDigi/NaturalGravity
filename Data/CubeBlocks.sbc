@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<Definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <CubeBlocks>
+
+    <Definition xsi:type="MyObjectBuilder_GravityGeneratorSphereDefinition">
+      <Id>
+        <TypeId>GravityGeneratorSphere</TypeId>
+        <SubtypeId>NaturalGravityGenerator</SubtypeId>
+      </Id>
+      <DisplayName>NaturalGravityGenerator</DisplayName>
+      <Icon>Textures\GUI\Icons\Cubes\gravity_generator_spherical.dds</Icon>
+      <CubeSize>Large</CubeSize>
+      <BlockTopology>TriangleMesh</BlockTopology>
+      <Size x="1" y="1" z="1" />
+      <ModelOffset x="0" y="0" z="0" />
+      <Model>Models\Empty.mwm</Model>
+      <Components>
+		<Component Subtype="Unbreakable" Count="1" />
+		<Component Subtype="Unbreakable" Count="100" />
+      </Components>
+      <CriticalComponent Subtype="Unbreakable" Index="0" />
+      <MountPoints>
+        <MountPoint Side="Top" StartX="0.1" StartY="0.1" EndX="0.9" EndY="0.9" />
+      </MountPoints>
+      <EdgeType>Light</EdgeType>
+      <BuildTimeSeconds>999999999</BuildTimeSeconds>
+      <DisassembleRatio>999999999</DisassembleRatio>
+	<DeformationRatio>0.000001</DeformationRatio>
+      <MinRadius>1</MinRadius>
+      <MaxRadius>999999999</MaxRadius>
+      <BasePowerInput>0.0000001</BasePowerInput>
+      <ConsumptionPower>0.0000001</ConsumptionPower>
+	<Public>false</Public>
+    </Definition>
+
+    <Definition xsi:type="MyObjectBuilder_ReactorDefinition">
+      <Id>
+        <TypeId>Reactor</TypeId>
+        <SubtypeId>NaturalGravityReactor</SubtypeId>
+      </Id>
+      <DisplayName>NaturalGravityReactor</DisplayName>
+      <Icon>Textures\GUI\Icons\Cubes\nuclear_reactor.dds</Icon>
+      <CubeSize>Large</CubeSize>
+      <BlockTopology>TriangleMesh</BlockTopology>
+      <Size x="1" y="1" z="1" />
+      <ModelOffset x="0" y="2.5" z="0" />
+      <Model>Models\Empty.mwm</Model>
+      <Components>
+		<Component Subtype="Unbreakable" Count="1" />
+		<Component Subtype="Unbreakable" Count="100" />
+      </Components>
+      <CriticalComponent Subtype="Unbreakable" Index="0" />
+      <MountPoints>
+        <MountPoint Side="Top" StartX="0.1" StartY="0.1" EndX="0.9" EndY="0.9" />
+      </MountPoints>
+      <EdgeType>Light</EdgeType>
+      <BuildTimeSeconds>999999999</BuildTimeSeconds>
+      <DisassembleRatio>999999999</DisassembleRatio>
+	<DeformationRatio>0.000001</DeformationRatio>
+      <MaxPowerOutput>1</MaxPowerOutput>
+      <UseModelIntersection>true</UseModelIntersection>
+      <InventorySize>
+        <X>1</X>
+        <Y>1</Y>
+        <Z>1</Z>
+      </InventorySize>
+      <FuelId>
+        <TypeId>Ingot</TypeId>
+        <SubtypeId>Uranium</SubtypeId>
+      </FuelId>
+	<Public>false</Public>
+    </Definition>
+
+  </CubeBlocks>
+</Definitions>
