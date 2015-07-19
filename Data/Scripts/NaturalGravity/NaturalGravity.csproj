@@ -59,12 +59,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Gravity.cs" />
+    <Compile Include="Commands.cs" />
+    <Compile Include="GravityPoint.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="NaturalGravity.cs" />
-    <Compile Include="NaturalGravityGenerator.cs" />
-    <Compile Include="NaturalGravityReactor.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="MultiplayerSync.cs" />
+    <Compile Include="Utils.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
