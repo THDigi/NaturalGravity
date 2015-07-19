@@ -10,7 +10,7 @@ namespace Digi.Utils
 {
     class Log
     {
-        private const string MOD_NAME = "UNNAMED";
+        private const string MOD_NAME = "NaturalGravity";
         private const string LOG_FILE = "info.log";
 
         private static System.IO.TextWriter writer;
