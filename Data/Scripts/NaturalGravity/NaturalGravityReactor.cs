@@ -30,16 +30,16 @@ namespace Digi.NaturalGravity
     {
         private MyObjectBuilder_EntityBase objectBuilder;
         private Sandbox.ModAPI.Ingame.IMyReactor reactor;
-        
+
         private static MyObjectBuilder_Ingot fuel = new MyObjectBuilder_Ingot() { SubtypeName = "Uranium" };
-        
+
         public override void Init(MyObjectBuilder_EntityBase objectBuilder)
         {
             this.objectBuilder = objectBuilder;
             reactor = Entity as Sandbox.ModAPI.Ingame.IMyReactor;
             reactor.RequestEnable(true);
             Entity.NeedsUpdate |= MyEntityUpdateEnum.EACH_100TH_FRAME;
-            
+
             /*
             if(reactor != null && reactor.BlockDefinition.SubtypeId == "NaturalGravityReactor")
             {
@@ -52,20 +52,20 @@ namespace Digi.NaturalGravity
             }
              */
         }
-        
+
         public override void UpdateBeforeSimulation100()
         {
-            if(reactor == null || !reactor.IsVisible())
+            if (reactor == null || !reactor.IsVisible())
                 return;
-            
+
             var inv = (reactor as Sandbox.ModAPI.Interfaces.IMyInventoryOwner).GetInventory(0) as Sandbox.ModAPI.IMyInventory;
-            
-            if(!inv.ContainItems(2, fuel))
+
+            if (!inv.ContainItems(2, fuel))
             {
                 inv.AddItems(2, fuel);
             }
         }
-        
+
         public override MyObjectBuilder_EntityBase GetObjectBuilder(bool copy = false)
         {
             return copy ? (MyObjectBuilder_EntityBase)objectBuilder.Clone() : objectBuilder;

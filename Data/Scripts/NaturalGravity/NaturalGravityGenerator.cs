@@ -30,14 +30,14 @@ namespace Digi.NaturalGravity
         private MyObjectBuilder_EntityBase objectBuilder;
         private Sandbox.ModAPI.Ingame.IMyGravityGeneratorSphere generator;
         private bool added;
-        
+
         public override void Init(MyObjectBuilder_EntityBase objectBuilder)
         {
             this.objectBuilder = objectBuilder;
             generator = Entity as Sandbox.ModAPI.Ingame.IMyGravityGeneratorSphere;
             added = false;
             generator.NeedsUpdate |= MyEntityUpdateEnum.EACH_10TH_FRAME;
-            
+
             /*
             if(generator != null && generator.BlockDefinition.SubtypeId == "NaturalGravityGenerator")
             {
@@ -49,33 +49,33 @@ namespace Digi.NaturalGravity
             }
              */
         }
-        
+
         public override void UpdateAfterSimulation10()
         {
-            if(generator != null && !added && NaturalGravity.init)
+            if (generator != null && !added && NaturalGravity.init)
             {
-                if(!generator.IsVisible())
+                if (!generator.IsVisible())
                 {
-                    Log.Info("Natural gravity generator found but it's not visible; pos="+Entity.GetPosition()+"; id="+Entity.EntityId);
+                    Log.Info("Natural gravity generator found but it's not visible; pos=" + Entity.GetPosition() + "; id=" + Entity.EntityId);
                     return;
                 }
-                
+
                 added = true;
                 NaturalGravity.AddGravityPoint(new Gravity(generator));
-                Log.Info("Natural gravity added; pos="+Entity.GetPosition()+"; id="+Entity.EntityId);
+                Log.Info("Natural gravity added; pos=" + Entity.GetPosition() + "; id=" + Entity.EntityId);
             }
         }
-        
+
         public override void Close()
         {
-            if(generator != null && NaturalGravity.init)
+            if (generator != null && NaturalGravity.init)
             {
                 added = false;
                 NaturalGravity.RemoveGravityPoint(generator);
                 Log.Info("Natural gravity generator removed");
             }
         }
-        
+
         public override MyObjectBuilder_EntityBase GetObjectBuilder(bool copy = false)
         {
             return copy ? (MyObjectBuilder_EntityBase)objectBuilder.Clone() : objectBuilder;

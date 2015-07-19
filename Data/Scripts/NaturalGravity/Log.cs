@@ -12,7 +12,7 @@ namespace Digi.Utils
     {
         private const string MOD_NAME = "UNNAMED";
         private const string LOG_FILE = "info.log";
-        
+
         private static System.IO.TextWriter writer;
         private static int indent = 0;
         private static StringBuilder cache = new StringBuilder();
@@ -37,33 +37,33 @@ namespace Digi.Utils
         {
             Error(e.ToString());
         }
-        
+
         public static void Error(string msg)
         {
             Info("ERROR: " + msg);
-            
+
             try
             {
-                MyAPIGateway.Utilities.ShowNotification(MOD_NAME+" error - open %AppData%/SpaceEngineers/Storage/..._"+MOD_NAME+"/"+LOG_FILE+" for details", 10000, MyFontEnum.Red);
+                MyAPIGateway.Utilities.ShowNotification(MOD_NAME + " error - open %AppData%/SpaceEngineers/Storage/..._" + MOD_NAME + "/" + LOG_FILE + " for details", 10000, MyFontEnum.Red);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Info("ERROR: Could not send notification to local client: " + e.ToString());
             }
         }
-        
+
         public static void Info(string msg)
         {
             Write(msg);
         }
-        
+
         private static void Write(string msg)
         {
-            if(writer == null)
+            if (writer == null)
             {
-                if(MyAPIGateway.Utilities == null)
+                if (MyAPIGateway.Utilities == null)
                     throw new Exception("API not initialied but got a log message: " + msg);
-                
+
                 writer = MyAPIGateway.Utilities.WriteFileInLocalStorage(LOG_FILE, typeof(Log));
             }
 
@@ -82,10 +82,10 @@ namespace Digi.Utils
 
             cache.Clear();
         }
-        
+
         public static void Close()
         {
-            if(writer != null)
+            if (writer != null)
             {
                 writer.Flush();
                 writer.Close();
