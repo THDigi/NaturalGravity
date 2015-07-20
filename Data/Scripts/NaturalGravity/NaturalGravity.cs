@@ -75,6 +75,8 @@ namespace Digi.NaturalGravity
 
             MyAPIGateway.Multiplayer.RegisterMessageHandler(PACKET_SYNC, ReceivedSyncPacket);
 
+            MyAPIGateway.Session.DamageSystem.RegisterBeforeDamageHandler(0, BeforeDamage);
+
             Settings.Init();
         }
 
@@ -92,6 +94,19 @@ namespace Digi.NaturalGravity
 
             Settings.Close();
             Log.Close();
+        }
+
+        public void BeforeDamage(Object target, ref MyDamageInformation info)
+        {
+            if (target is IMySlimBlock)
+            {
+                var block = target as IMySlimBlock;
+
+                if (block.CubeGrid.IsStatic && block.CubeGrid.Name == PREFAB_NAME)
+                {
+                    info.Amount = 0; // prevent damage to the natural gravity blocks.
+                }
+            }
         }
 
         private Gravity GetGravityInAsteroid(IMyVoxelBase asteroid)
