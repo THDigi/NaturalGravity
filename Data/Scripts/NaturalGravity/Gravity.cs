@@ -70,7 +70,7 @@ namespace Digi.NaturalGravity
 
         public bool InRadius(IMyEntity ent)
         {
-            return InRadius(ent.GetPosition());
+            return InRadius(ent.Physics.CenterOfMassWorld);
         }
 
         public bool InRadius(Vector3D pos)
@@ -129,9 +129,9 @@ namespace Digi.NaturalGravity
                     else if (Settings.mass_limit > 0)
                         mass = Math.Min(mass, Settings.mass_limit);
 
-                    var force = Vector3D.Normalize(center - ent.GetPosition()) * mass * strength;
+                    var force = Vector3D.Normalize(center - ent.Physics.CenterOfMassWorld) * mass * strength;
 
-                    ent.Physics.AddForce(MyPhysicsForceType.APPLY_WORLD_FORCE, force, null, null);
+                    ent.Physics.AddForce(MyPhysicsForceType.APPLY_WORLD_FORCE, force, ent.Physics.CenterOfMassWorld, null);
                 }
             }
 
