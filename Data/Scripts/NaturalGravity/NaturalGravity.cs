@@ -62,10 +62,13 @@ namespace Digi.NaturalGravity
 
         public const ushort PACKET_SYNC = 12316;
 
+        public static bool alignStations = false;
+
         public void Init()
         {
             Log.Info("Initialized.");
             init = true;
+            alignStations = false;
             isServer = MyAPIGateway.Multiplayer.IsServer || MyAPIGateway.Session.OnlineMode == MyOnlineModeEnum.OFFLINE;
             isDedicated = (MyAPIGateway.Utilities.IsDedicated && isServer);
 
@@ -300,6 +303,14 @@ namespace Digi.NaturalGravity
                     return;
                 }
 
+                if (message.StartsWith("align station"))
+                {
+                    alignStations = !alignStations;
+                    MyAPIGateway.Utilities.ShowMessage(MOD_SHORTNAME, "Aligning new stations to gravity is now " + (alignStations ? "ON" : "OFF"));
+                    MyAPIGateway.Utilities.ShowMessage("NOTE", "This is setting is only for you, it's not saved, not synchronized and resets to OFF when you reload.");
+                    return;
+                }
+
                 bool msgRadius = message.StartsWith("radius");
                 bool msgStrength = message.StartsWith("strength");
                 bool on = message.Equals("on");
@@ -417,7 +428,8 @@ namespace Digi.NaturalGravity
                 builder.AppendLine("/ng set <setting> <value>");
             }
 
-            builder.Append("/ng settings - shows mod settings");
+            builder.AppendLine("/ng settings - shows mod settings");
+            builder.Append("/ng align station - client-only setting");
 
             MyAPIGateway.Utilities.ShowMissionScreen("Natural Gravity Commands", "", "", builder.ToString(), null, "CLOSE");
         }
@@ -860,6 +872,70 @@ namespace Digi.NaturalGravity
             center = new BoundingBoxD(asteroid.PositionLeftBottomCorner + min, asteroid.PositionLeftBottomCorner + max).Center;
             radius = CalculateAsteroidRadius(asteroid);
             strength = CalculateAsteroidStrength(asteroid);
+        }
+    }
+
+    [MyEntityComponentDescriptor(typeof(MyObjectBuilder_CubeGrid))]
+    class Grid : MyGameLogicComponent
+    {
+        private MyObjectBuilder_EntityBase objectBuilder;
+
+        public override void Init(MyObjectBuilder_EntityBase objectBuilder)
+        {
+            this.objectBuilder = objectBuilder;
+            Entity.NeedsUpdate |= MyEntityUpdateEnum.BEFORE_NEXT_FRAME;
+        }
+
+        public override void UpdateOnceBeforeFrame()
+        {
+            try
+            {
+                if (!NaturalGravity.alignStations)
+                    return;
+
+                if (!Entity.Transparent && MyAPIGateway.CubeBuilder.IsActivated)
+                {
+                    var grid = Entity as IMyCubeGrid;
+
+                    if (grid.GridSizeEnum == MyCubeSize.Small)
+                        return;
+
+                    var block = grid.GetCubeBlock(Vector3I.Zero);
+                    
+                    if (block != null && block.ToString().Contains("LandingGear"))
+                        return;
+
+                    Vector3 gravDir = Vector3.Zero;
+
+                    foreach (Gravity gravity in NaturalGravity.gravityPoints)
+                    {
+                        if (gravity.InRadius(Entity.WorldMatrix.Translation))
+                        {
+                            gravDir += (Entity.WorldMatrix.Translation - gravity.center);
+                        }
+                    }
+
+                    if (gravDir != Vector3.Zero)
+                    {
+                        gravDir.Normalize();
+
+                        var matrix = MatrixD.CreateFromDir(gravDir, Entity.WorldMatrix.Up);
+                        matrix.Translation = Entity.WorldMatrix.Translation;
+                        Entity.SetWorldMatrix(matrix);
+
+                        MyAPIGateway.Utilities.ShowNotification("Platform auto-aligned to gravity!", 3000, MyFontEnum.Green);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+            }
+        }
+
+        public override MyObjectBuilder_EntityBase GetObjectBuilder(bool copy = false)
+        {
+            return copy ? (MyObjectBuilder_EntityBase)objectBuilder.Clone() : objectBuilder;
         }
     }
 }
