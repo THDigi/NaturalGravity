@@ -56,7 +56,7 @@ namespace Digi.NaturalGravity
         private static int extraTick = 0;
         public static List<Gravity> gravityPoints = new List<Gravity>();
         private static HashSet<IMyEntity> entities = new HashSet<IMyEntity>();
-        private static MyStorageDataCache cache = new MyStorageDataCache();
+        private static MyStorageData cache = new MyStorageData();
 
         private const string LOG_FILE = "info.log";
 
