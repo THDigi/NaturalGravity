@@ -35,19 +35,8 @@ namespace Digi.NaturalGravity
         {
             this.objectBuilder = objectBuilder;
             generator = Entity as Sandbox.ModAPI.Ingame.IMyGravityGeneratorSphere;
-            added = false;
             generator.NeedsUpdate |= MyEntityUpdateEnum.EACH_10TH_FRAME;
-
-            /*
-            if(generator != null && generator.BlockDefinition.SubtypeId == "NaturalGravityGenerator")
-            {
-                generator.NeedsUpdate |= MyEntityUpdateEnum.EACH_10TH_FRAME;
-            }
-            else
-            {
-                generator = null;
-            }
-             */
+            added = false;
         }
 
         public override void UpdateAfterSimulation10()
