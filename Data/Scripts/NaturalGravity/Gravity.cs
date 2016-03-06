@@ -15,11 +15,12 @@ using Sandbox.Game;
 using Sandbox.Game.Entities;
 using Sandbox.ModAPI;
 using Sandbox.ModAPI.Interfaces;
+using VRage.Game;
 using VRageMath;
 using VRage;
 using VRage.ModAPI;
 using VRage.ObjectBuilders;
-using VRage.Components;
+using VRage.Game.Components;
 using VRage.Utils;
 using Digi.Utils;
 

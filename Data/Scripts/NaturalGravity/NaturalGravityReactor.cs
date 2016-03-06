@@ -15,14 +15,15 @@ using Sandbox.Game;
 using Sandbox.Game.Entities;
 using Sandbox.ModAPI;
 using Sandbox.ModAPI.Interfaces;
+using VRage.Game;
+using VRage.Game.Entity;
 using VRageMath;
 using VRage;
 using VRage.ModAPI;
 using VRage.ObjectBuilders;
-using VRage.Components;
+using VRage.Game.Components;
 using VRage.Utils;
 using Digi.Utils;
-
 using Ingame = Sandbox.ModAPI.Ingame;
 
 namespace Digi.NaturalGravity
@@ -57,13 +58,17 @@ namespace Digi.NaturalGravity
         {
             try
             {
-                var reactor = Entity as Ingame.IMyReactor;
-                var inv = (reactor as IMyInventoryOwner).GetInventory(0) as Sandbox.ModAPI.IMyInventory;
+                var reactor = Entity as MyEntity;
+                MyInventory inv;
                 
-                if (!inv.ContainItems(2, fuel))
+                if(reactor.TryGetInventory(out inv))
                 {
-                    inv.AddItems(2, fuel);
+                    if(!inv.ContainItems(2, fuel))
+                    {
+                        inv.AddItems(2, fuel);
+                    }
                 }
+                
             }
             catch(Exception e)
             {

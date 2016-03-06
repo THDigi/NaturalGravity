@@ -17,11 +17,12 @@ using Sandbox.Game.Entities;
 using Sandbox.ModAPI;
 using Sandbox.ModAPI.Interfaces;
 using VRage.Common.Utils;
+using VRage.Game;
 using VRageMath;
 using VRage;
 using VRage.ModAPI;
 using VRage.ObjectBuilders;
-using VRage.Components;
+using VRage.Game.Components;
 using VRage.Utils;
 using VRage.Voxels;
 using Digi.Utils;
@@ -63,7 +64,7 @@ namespace Digi.NaturalGravity
         public const ushort PACKET_SYNC = 12316;
 
         public static bool alignStations = false;
-
+        
         public void Init()
         {
             Log.Info("Initialized.");
@@ -94,6 +95,8 @@ namespace Digi.NaturalGravity
             MyAPIGateway.Multiplayer.UnregisterMessageHandler(PACKET_SYNC, ReceivedSyncPacket);
 
             Settings.Close();
+            
+            Log.Info("Mod unloaded.");
             Log.Close();
         }
 

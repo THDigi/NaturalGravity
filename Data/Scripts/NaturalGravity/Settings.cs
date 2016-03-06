@@ -20,7 +20,7 @@ using VRageMath;
 using VRage;
 using VRage.ModAPI;
 using VRage.ObjectBuilders;
-using VRage.Components;
+using VRage.Game.Components;
 using VRage.Utils;
 using Digi.Utils;
 
