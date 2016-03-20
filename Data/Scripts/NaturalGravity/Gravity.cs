@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using Sandbox.Common;
-using Sandbox.Common.Components;
 using Sandbox.Common.ObjectBuilders;
 using Sandbox.Definitions;
 using Sandbox.Engine;
@@ -15,7 +14,9 @@ using Sandbox.Game;
 using Sandbox.Game.Entities;
 using Sandbox.ModAPI;
 using Sandbox.ModAPI.Interfaces;
+using SpaceEngineers.Game.ModAPI.Ingame;
 using VRage.Game;
+using VRage.Game.ModAPI;
 using VRageMath;
 using VRage;
 using VRage.ModAPI;
@@ -28,8 +29,8 @@ namespace Digi.NaturalGravity
 {
     public class Gravity
     {
-        public Sandbox.ModAPI.Ingame.IMyGravityGeneratorSphere generator;
-        //public Sandbox.ModAPI.Ingame.IMyReactor reactor;
+        public IMyGravityGeneratorSphere generator;
+        //public IMyReactor reactor;
 
         public List<IMyEntity> entities = new List<IMyEntity>();
         public Vector3D center { get; private set; }
@@ -46,21 +47,21 @@ namespace Digi.NaturalGravity
                 throw new Exception("grid can not be null!");
             
             List<IMySlimBlock> blocks = new List<IMySlimBlock>();
-            grid.GetBlocks(blocks, b => b.FatBlock != null && b.FatBlock is Sandbox.ModAPI.Ingame.IMyGravityGeneratorSphere);
+            grid.GetBlocks(blocks, b => b.FatBlock != null && b.FatBlock is IMyGravityGeneratorSphere);
             
             if(blocks.Count == 0 || blocks[0] == null)
                 throw new Exception("grid does not contain a spherical gravity generator!");
             
-            CreateFromGG(blocks[0].FatBlock as Sandbox.ModAPI.Ingame.IMyGravityGeneratorSphere);
+            CreateFromGG(blocks[0].FatBlock as IMyGravityGeneratorSphere);
         }
          */
 
-        public Gravity(Sandbox.ModAPI.Ingame.IMyGravityGeneratorSphere generator)
+        public Gravity(IMyGravityGeneratorSphere generator)
         {
             CreateFromGG(generator);
         }
 
-        private void CreateFromGG(Sandbox.ModAPI.Ingame.IMyGravityGeneratorSphere generator)
+        private void CreateFromGG(IMyGravityGeneratorSphere generator)
         {
             if (generator == null)
                 throw new Exception("generator can not be null!");

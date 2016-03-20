@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Sandbox.Common;
-using Sandbox.Common.Components;
 using Sandbox.Common.ObjectBuilders;
 using Sandbox.Definitions;
 using Sandbox.Engine;
@@ -14,6 +13,7 @@ using Sandbox.Game;
 using Sandbox.Game.Entities;
 using Sandbox.ModAPI;
 using Sandbox.ModAPI.Interfaces;
+using SpaceEngineers.Game.ModAPI.Ingame;
 using VRageMath;
 using VRage;
 using VRage.ModAPI;
@@ -28,13 +28,13 @@ namespace Digi.NaturalGravity
     class NaturalGravityGenerator : MyGameLogicComponent
     {
         private MyObjectBuilder_EntityBase objectBuilder;
-        private Sandbox.ModAPI.Ingame.IMyGravityGeneratorSphere generator;
+        private IMyGravityGeneratorSphere generator;
         private bool added;
 
         public override void Init(MyObjectBuilder_EntityBase objectBuilder)
         {
             this.objectBuilder = objectBuilder;
-            generator = Entity as Sandbox.ModAPI.Ingame.IMyGravityGeneratorSphere;
+            generator = Entity as IMyGravityGeneratorSphere;
             generator.NeedsUpdate |= MyEntityUpdateEnum.EACH_10TH_FRAME;
             added = false;
         }

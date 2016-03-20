@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using Sandbox.Common;
-using Sandbox.Common.Components;
 using Sandbox.Common.ObjectBuilders;
 using Sandbox.Definitions;
 using Sandbox.Engine;
@@ -16,8 +15,10 @@ using Sandbox.Game;
 using Sandbox.Game.Entities;
 using Sandbox.ModAPI;
 using Sandbox.ModAPI.Interfaces;
+using SpaceEngineers.Game.ModAPI.Ingame;
 using VRage.Common.Utils;
 using VRage.Game;
+using VRage.Game.ModAPI;
 using VRageMath;
 using VRage;
 using VRage.ModAPI;
@@ -67,6 +68,7 @@ namespace Digi.NaturalGravity
         
         public void Init()
         {
+            Log.Init();
             Log.Info("Initialized.");
             init = true;
             alignStations = false;
@@ -672,7 +674,7 @@ namespace Digi.NaturalGravity
             gravityPoints.Add(gravity);
         }
 
-        public static void RemoveGravityPoint(Sandbox.ModAPI.Ingame.IMyGravityGeneratorSphere generator)
+        public static void RemoveGravityPoint(IMyGravityGeneratorSphere generator)
         {
             gravityPoints.RemoveAll(gravity => gravity.generator == generator);
         }
